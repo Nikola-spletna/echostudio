@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Echo Studio – custom websites for businesses and creators in Slovenia.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Echo Studio</title>
+</head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a fixed 3D scene of the word "Echo" repeating into depth; the page scrolls over it and the camera flies through each echo. */
+:root{
+  --bg:#0D0E11;
+  --fg:#ECE8E1;
+  --muted:#9C978E;
+  --line:rgba(236,232,225,.16);
+  --veil:rgba(13,14,17,.55);
+  --display:'DM Serif Display',Georgia,'Times New Roman',serif;
+  --body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+#scene{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+.wrap{position:relative;z-index:1;padding-inline:clamp(16px,5vw,72px)}
+
+.bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) clamp(16px,5vw,72px) 18px}
+.mark{display:flex;align-items:baseline;gap:10px;color:var(--fg);text-decoration:none}
+.mark b{font-family:var(--display);font-weight:400;font-size:26px;line-height:1;letter-spacing:-.5px}
+.mark span{font-size:11px;font-weight:600;letter-spacing:.42em}
+.bar a.cta{color:var(--fg);font-size:14px;font-weight:500;text-decoration:none;padding:10px 18px;border:1px solid var(--line);border-radius:999px;background:var(--veil);backdrop-filter:blur(6px)}
+.bar a.cta:hover{border-color:var(--fg)}
+a:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);margin:0}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(34px,5.4vw,64px);line-height:1.05}
+h2{font-size:clamp(30px,4.4vw,52px);line-height:1.08}
+p{margin:0;max-width:34rem}
+
+.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:flex-end;gap:18px;padding-block:120px 9vh}
+.hero p.lead{color:var(--muted);font-size:clamp(16px,1.6vw,19px)}
+.scroll{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);margin-top:14px}
+.scroll i{display:block;width:1px;height:38px;background:linear-gradient(var(--fg),transparent);animation:drip 2.2s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+.sec{min-height:100vh;display:flex;align-items:center;padding-block:14vh}
+.sec.right{justify-content:flex-end}
+.col{display:flex;flex-direction:column;gap:22px;max-width:36rem;min-width:0;padding:28px 0}
+
+.points{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column}
+.points li{display:flex;gap:18px;padding:14px 0;border-top:1px solid var(--line)}
+.points li:last-child{border-bottom:1px solid var(--line)}
+.points .k{color:var(--muted);font-size:13px;min-width:5.5rem;padding-top:3px}
+.right-bar{display:flex;align-items:center;gap:10px}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;background:var(--veil);backdrop-filter:blur(6px);padding:3px}
+.lang button{font:inherit;font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--muted);background:transparent;border:0;border-radius:999px;padding:7px 12px;min-height:36px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.lang button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+
+.work{display:flex;flex-direction:column;margin-top:6px}
+.work a{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 24px;padding:20px 0;border-top:1px solid var(--line);color:var(--fg);text-decoration:none}
+.work a:last-child{border-bottom:1px solid var(--line)}
+.work a:hover .name{font-style:italic}
+.work .name{font-family:var(--display);font-size:clamp(24px,2.6vw,32px);line-height:1.1}
+.work .what{color:var(--muted);font-size:15px;flex-basis:100%}
+.work .url{font-size:13px;color:var(--muted)}
+
+.price{display:flex;flex-wrap:wrap;gap:28px 56px;margin-top:6px}
+.price div{display:flex;flex-direction:column;gap:4px}
+.price strong{font-family:var(--display);font-weight:400;font-size:clamp(48px,7vw,84px);line-height:1;font-variant-numeric:tabular-nums}
+.price small{font-size:14px;color:var(--muted)}
+.note{font-size:14px;color:var(--muted)}
+
+.end{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:18px;padding-block:14vh}
+.end h2{font-size:clamp(40px,7vw,96px)}
+.end p.echo{font-family:var(--display);font-style:italic;font-size:clamp(20px,2.4vw,28px);color:var(--muted);max-width:none}
+.contact{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:22px}
+.contact span{padding:12px 20px;border:1px solid var(--line);border-radius:999px;font-size:15px;user-select:all;background:var(--veil)}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding-block:28px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+
+.fallback{display:none}
+.no-gl .fallback{display:block;position:fixed;inset:0;z-index:0;pointer-events:none}
+.no-gl .fallback div{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font-family:var(--display);font-size:min(30vw,260px);line-height:1;color:var(--fg)}
+.no-gl .fallback div:nth-child(2){opacity:.22;transform:translate(-46%,-48%) scale(.82)}
+.no-gl .fallback div:nth-child(3){opacity:.08;transform:translate(-42%,-46%) scale(.66)}
+@media (prefers-reduced-motion:reduce){.scroll i{animation:none}}
+</style>
+
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="fallback" aria-hidden="true"><div>Echo</div><div>Echo</div><div>Echo</div></div>
+
+<nav class="bar" aria-label="Main menu">
+  <a class="mark" href="#top" aria-label="Echo Studio, back to top"><b>Echo</b><span>STUDIO</span></a>
+  <div class="right-bar">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" id="lang-sl" data-lang="sl" aria-pressed="false">SL</button>
+    </div>
+    <a class="cta" href="#kontakt" data-i18n="nav.contact">Contact</a>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+  <section class="hero">
+    <p class="eyebrow" data-i18n="hero.eyebrow">Custom websites · Slovenia</p>
+    <h1 data-i18n="hero.title">Websites that echo.</h1>
+    <p class="lead" data-i18n="hero.lead">For businesses, restaurants, shops and creators who want to be noticed and remembered online.</p>
+    <div class="scroll"><i></i><span data-i18n="hero.scroll">Scroll to continue</span></div>
+  </section>
+
+  <section class="sec">
+    <div class="col">
+      <p class="eyebrow" data-i18n="what.eyebrow">What we make</p>
+      <h2 data-i18n="what.title">A website that shows who you are and stays in people’s minds.</h2>
+      <ul class="points">
+        <li><span class="k" data-i18n="what.k1">Custom</span><span data-i18n="what.p1">Business sites, portfolios, online stores and 3D experiences, designed around your brand.</span></li>
+        <li><span class="k" data-i18n="what.k2">Mobile</span><span data-i18n="what.p2">Fast and clear on every screen, from phone to desktop.</span></li>
+        <li><span class="k" data-i18n="what.k3">Care</span><span data-i18n="what.p3">Updates and maintenance, without you needing any technical skills.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec right">
+    <div class="col">
+      <p class="eyebrow" data-i18n="work.eyebrow">Projects</p>
+      <h2 data-i18n="work.title">A few names that already echo.</h2>
+      <div class="work">
+        <a href="https://kavkabar.si" target="_blank" rel="noopener">
+          <span class="name">Kavka bar</span><span class="url">kavkabar.si</span>
+          <span class="what" data-i18n="work.kavka">An online menu for a bar on Maistrov trg in Kranj.</span>
+        </a>
+        <a href="https://thesolecleanic.com" target="_blank" rel="noopener">
+          <span class="name">The Sole Cleanic</span><span class="url">thesolecleanic.com</span>
+          <span class="what" data-i18n="work.sole">A 3D sneaker that shows the cleaning, before and after.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="col">
+      <p class="eyebrow" data-i18n="price.eyebrow">Pricing</p>
+      <h2 data-i18n="price.title">Priced by what your project needs.</h2>
+      <ul class="points">
+        <li><span class="k" data-i18n="price.k1">Simple</span><span data-i18n="price.p1">A one-page site that presents your business or work.</span></li>
+        <li><span class="k" data-i18n="price.k2">Extended</span><span data-i18n="price.p2">Multiple pages, galleries, forms, bookings or an online store.</span></li>
+        <li><span class="k" data-i18n="price.k3">Special</span><span data-i18n="price.p3">3D, animation and experiences no one else has.</span></li>
+      </ul>
+      <p class="note" data-i18n="price.note">After a short conversation you get a clear quote, with no hidden costs.</p>
+    </div>
+  </section>
+
+  <section class="end" id="kontakt">
+    <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
+    <h2>Give us a shout.</h2>
+    <p class="echo">And your name will echo forever.</p>
+    <div class="contact">
+      <span>nikola.vasiljevic@echostudio-si.com</span>
+      <span>+386 40 660 196</span>
+    </div>
+  </section>
+
+  <footer><span>Echo Studio</span><span data-i18n="footer.place">Slovenia</span></footer>
+</main>
+
+<script>
+(function(){
+  var SL = {
+    'nav.contact': 'Kontakt',
+    'hero.eyebrow': 'Spletne strani po meri · Slovenija',
+    'hero.title': 'Spletne strani, ki odmevajo.',
+    'hero.lead': 'Za podjetja, lokale, trgovine in ustvarjalce, ki želijo, da se jih na spletu opazi in zapomni.',
+    'hero.scroll': 'Pomikaj za nadaljevanje',
+    'what.eyebrow': 'Kaj naredimo',
+    'what.title': 'Stran, ki pove, kdo ste, in ostane v spominu.',
+    'what.k1': 'Po meri',
+    'what.p1': 'Predstavitvene strani, portfoliji, spletne trgovine in 3D izkušnje, oblikovane za vašo znamko.',
+    'what.k2': 'Telefon',
+    'what.p2': 'Hitre in pregledne na vsakem zaslonu, od telefona do računalnika.',
+    'what.k3': 'Skrb',
+    'what.p3': 'Posodobitve in vzdrževanje, ne da bi vam bilo treba kaj znati.',
+    'work.eyebrow': 'Projekti',
+    'work.title': 'Nekaj glasov, ki že odmevajo.',
+    'work.kavka': 'Spletni meni za bar na Maistrovem trgu v Kranju.',
+    'work.sole': '3D čevelj, ki pokaže čiščenje pred in po.',
+    'price.eyebrow': 'Cena',
+    'price.title': 'Cena glede na zahtevnost.',
+    'price.k1': 'Preprosto',
+    'price.p1': 'Enostranska predstavitev vašega podjetja ali dejavnosti.',
+    'price.k2': 'Obsežno',
+    'price.p2': 'Več podstrani, galerije, obrazci, rezervacije ali trgovina.',
+    'price.k3': 'Posebno',
+    'price.p3': '3D, animacije in izkušnje, ki jih nima nihče drug.',
+    'price.note': 'Po kratkem pogovoru dobite jasno ponudbo, brez skritih stroškov.',
+    'contact.eyebrow': 'Kontakt',
+    'footer.place': 'Slovenija'
+  };
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].dataset.en = nodes[i].textContent;
+  var buttons = document.querySelectorAll('.lang button');
+
+  function setLang(lang){
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      n.textContent = lang === 'sl' ? (SL[n.dataset.i18n] || n.dataset.en) : n.dataset.en;
+    }
+    document.documentElement.lang = lang;
+    for (var j = 0; j < buttons.length; j++) buttons[j].setAttribute('aria-pressed', String(buttons[j].dataset.lang === lang));
+    try { localStorage.setItem('echo-lang', lang); } catch (e) {}
+  }
+  for (var b = 0; b < buttons.length; b++) {
+    buttons[b].addEventListener('click', function(){ setLang(this.dataset.lang); });
+  }
+  document.documentElement.lang = 'en';
+  var saved = null;
+  try { saved = localStorage.getItem('echo-lang'); } catch (e) {}
+  if (saved === 'sl') setLang('sl');
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canvas = document.getElementById('scene');
+  if (!window.THREE) { root.classList.add('no-gl'); return; }
+
+  var css = getComputedStyle(root);
+  var BG = css.getPropertyValue('--bg').trim() || '#0D0E11';
+  var FG = css.getPropertyValue('--fg').trim() || '#ECE8E1';
+
+  var renderer;
+  try { renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true}); }
+  catch (e) { root.classList.add('no-gl'); return; }
+  var mobile = Math.min(innerWidth, innerHeight) < 700;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75));
+  renderer.setClearColor(BG, 1);
+
+  var scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(BG, 6, 36);
+  var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
+
+  var N = 8, GAP = 7, START = 9, TRAVEL = 61;
+  var layers = [];
+  var group = new THREE.Group();
+  scene.add(group);
+
+  function wordTexture(){
+    var c = document.createElement('canvas');
+    c.width = 2048; c.height = 640;
+    var x = c.getContext('2d');
+    x.fillStyle = FG;
+    x.textAlign = 'center';
+    x.textBaseline = 'middle';
+    x.font = '400 420px "DM Serif Display", Georgia, serif';
+    x.fillText('Echo', 1024, 350);
+    var t = new THREE.CanvasTexture(c);
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  }
+
+  function build(){
+    var tex = wordTexture();
+    var geo = new THREE.PlaneGeometry(10, 3.125);
+    for (var i = 0; i < N; i++) {
+      var base = Math.max(0.12, 1 - i * 0.12);
+      var mat = new THREE.MeshBasicMaterial({map: tex, transparent: true, opacity: base, depthWrite: false});
+      var m = new THREE.Mesh(geo, mat);
+      m.userData = {i: i, base: base};
+      group.add(m);
+      layers.push(m);
+    }
+    // dust
+    var count = mobile ? 260 : 700, pos = new Float32Array(count * 3);
+    for (var k = 0; k < count; k++) {
+      pos[k*3] = (Math.random() - .5) * 40;
+      pos[k*3+1] = (Math.random() - .5) * 24;
+      pos[k*3+2] = 12 - Math.random() * 80;
+    }
+    var pg = new THREE.BufferGeometry();
+    pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    scene.add(new THREE.Points(pg, new THREE.PointsMaterial({color: FG, size: 0.045, transparent: true, opacity: .55, depthWrite: false})));
+    resize();
+    requestAnimationFrame(tick);
+  }
+
+  // ripples: a ring that grows and fades, like a sound pulse
+  var rings = [];
+  var ringGeo = new THREE.RingGeometry(0.97, 1, 96);
+  function ripple(x, y, z, strength){
+    var mat = new THREE.MeshBasicMaterial({color: FG, transparent: true, opacity: .5 * strength, side: THREE.DoubleSide, depthWrite: false});
+    var r = new THREE.Mesh(ringGeo, mat);
+    r.position.set(x, y, z);
+    r.userData = {t: 0, s: strength};
+    scene.add(r);
+    rings.push(r);
+  }
+
+  var mouse = {x: 0, y: 0}, cam = {x: 0, y: 0, z: START};
+  addEventListener('pointermove', function(e){
+    mouse.x = (e.clientX / innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+  }, {passive: true});
+  addEventListener('pointerdown', function(e){
+    if (reduce || e.target.closest('a')) return;
+    var v = new THREE.Vector3((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1, 0.5).unproject(camera);
+    var dir = v.sub(camera.position).normalize();
+    var p = camera.position.clone().add(dir.multiplyScalar(6));
+    ripple(p.x, p.y, p.z, 1);
+  });
+
+  var scale = 1;
+  function resize(){
+    var w = innerWidth, h = innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = camera.aspect < 0.8 ? 64 : 50;
+    scale = Math.min(1, camera.aspect * 1.25);
+    camera.updateProjectionMatrix();
+  }
+  addEventListener('resize', resize);
+
+  function progress(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    return max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+  }
+
+  var t0 = performance.now(), lastPulse = 0;
+  function tick(now){
+    var t = (now - t0) / 1000;
+    // intro: the echoes unfold out of the first word
+    var intro = reduce ? 1 : Math.min(1, t / 2.2);
+    var spread = 0.08 + 0.92 * (1 - Math.pow(1 - intro, 3));
+
+    var targetZ = START - progress() * TRAVEL;
+    var ease = reduce ? 1 : 0.07;
+    cam.z += (targetZ - cam.z) * ease;
+    cam.x += (mouse.x * 0.7 - cam.x) * 0.04;
+    cam.y += (mouse.y * 0.45 - cam.y) * 0.04;
+    camera.position.set(cam.x, cam.y, cam.z);
+    camera.lookAt(cam.x * 0.25, cam.y * 0.25, cam.z - 12);
+
+    for (var i = 0; i < layers.length; i++) {
+      var m = layers[i], d = m.userData;
+      var z = -d.i * GAP * spread;
+      m.position.set(d.i * 0.42 * spread, -d.i * 0.08 * spread, z);
+      if (!reduce) m.position.y += Math.sin(t * 0.6 + d.i * 0.7) * 0.06;
+      m.scale.setScalar(scale);
+      var ahead = cam.z - z; // distance in front of the camera
+      var near = Math.min(1, Math.max(0, (ahead - 1.5) / 5));
+      m.material.opacity = d.base * near * (0.35 + 0.65 * intro);
+    }
+
+    // an ambient pulse from the nearest echo every few seconds
+    if (!reduce && intro >= 1 && t - lastPulse > 3.6) {
+      lastPulse = t;
+      var nz = Math.min(0, Math.ceil((cam.z - 4) / (GAP)) * GAP);
+      ripple(0, 0, Math.max(-(N - 1) * GAP, nz - GAP), 0.6);
+    }
+    for (var r = rings.length - 1; r >= 0; r--) {
+      var g = rings[r];
+      g.userData.t += 1 / 60;
+      var k = g.userData.t / 2.4;
+      g.scale.setScalar(0.2 + k * 7);
+      g.material.opacity = Math.max(0, (1 - k)) * 0.5 * g.userData.s;
+      g.lookAt(camera.position);
+      if (k >= 1) { scene.remove(g); g.material.dispose(); rings.splice(r, 1); }
+    }
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+
+  var ready = document.fonts && document.fonts.load ? document.fonts.load('400 420px "DM Serif Display"') : Promise.resolve();
+  ready.then(build, build);
+})();
+</script>
+
+</body>
+</html>
